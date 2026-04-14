@@ -31,11 +31,18 @@ env/
 .env.local
 .env.*.local
 
-# Data & Database
-data/
-*.db
-*.sqlite
-chroma_db/
+# Data & Database - Include main chroma_db, exclude backups
+# We include data/chroma_db for easy deployment
+data/*_bak/
+data/*_backup/
+data/chroma_db_bak/
+data/chroma_db_backup/
+data/chroma_db_*/
+data/chroma_db (*)/
+data/chroma_db */
+data/*.db
+data/*.sqlite
+!data/chroma_db/
 
 # IDE
 .vscode/
