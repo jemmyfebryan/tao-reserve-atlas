@@ -344,9 +344,9 @@ QUESTION: {question}
 INSTRUCTIONS:
 - Answer the question using ONLY the information from the context above
 - If the context doesn't contain enough information, say so
-- Be specific and cite sources using [Source X] references
-- If information conflicts between sources, mention it
-- Keep answers clear and concise
+- Answer naturally without mentioning sources or citations
+- Be direct and concise
+- Do NOT include phrases like "According to Source 1" or "Based on the context"
 
 ANSWER:"""
 
