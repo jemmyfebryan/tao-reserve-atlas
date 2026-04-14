@@ -126,19 +126,9 @@ Choose the most relevant tool. If no tool is relevant, return {{"tool_name": "no
         """
         if tool_name == "none" or tool_name not in self.tools:
             # Use Gemini for general questions
-            general_prompt = f"""You are Atlas, a helpful AI assistant for Tao Reserve Discord server.
+            from agent.prompts import GENERAL_CONVERSATION_PROMPT
 
-About Tao Reserve:
-- An open server dedicated to the Tao Ecosystem
-- Connect subnet owners who want to hire developers with talented developers
-- Website: https://taoreserve.ai
-- Your name is Atlas
-
-Be friendly, helpful, and casual. Keep responses concise and natural.
-
-User message: {query}
-
-Respond naturally and helpfully:"""
+            general_prompt = GENERAL_CONVERSATION_PROMPT.format(user_message=query)
 
             try:
                 response = self.model.generate_content(general_prompt)
