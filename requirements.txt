@@ -7,6 +7,10 @@ chromadb
 # Embeddings (Google Gemini)
 google-generativeai
 
+# Discord Bot
+discord.py
+python-dotenv
+
 # Web scraping
 beautifulsoup4
 requests

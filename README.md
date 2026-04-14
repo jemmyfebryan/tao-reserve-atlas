@@ -27,9 +27,72 @@ pip install -r requirements.txt
 3. Configure environment:
 ```bash
 cp .env.example .env
-# Edit .env and add your Google Gemini API key
-# Get one from: https://makersuite.google.com/app/apikey
+# Edit .env and add your API keys:
+# - GEMINI_API_KEY: Get from https://makersuite.google.com/app/apikey
+# - DISCORD_TOKEN: Get from https://discord.com/developers/applications
+# - TARGET_CHANNEL_ID: The Discord channel ID where the bot will respond
 ```
+
+## Discord Bot - Atlas
+
+Atlas is an AI-powered Discord bot that answers questions about Bittensor using RAG.
+
+### Setup Atlas Bot
+
+1. **Create Discord Application**:
+   - Go to https://discord.com/developers/applications
+   - Create a new application ("Atlas")
+   - Go to "Bot" section and create a bot
+   - Copy the bot token to your `.env` file as `DISCORD_TOKEN`
+   - Enable "Message Content Intent" under Privileged Gateway Intents
+
+2. **Get Channel ID**:
+   - Enable Developer Mode in Discord (Settings → Advanced)
+   - Right-click the channel where you want Atlas to respond
+   - Copy ID and add to `.env` as `TARGET_CHANNEL_ID`
+
+3. **Invite Bot to Server**:
+   - In Discord Developer Portal, go to "OAuth2" → "URL Generator"
+   - Select scopes: `bot`
+   - Select permissions: `Send Messages`, `Read Messages`, `Read Message History`
+   - Use the generated URL to invite Atlas to your server
+
+4. **Prepare Knowledge Base**:
+```bash
+# Scrape Bittensor documentation
+python main.py scrape https://docs.learnbittensor.org --recursive --max-depth 2 --collection learn_bittensor_understand_bittensor
+```
+
+5. **Run Atlas**:
+```bash
+python run_bot.py
+```
+
+### Using Atlas
+
+Once running, Atlas will:
+- Only respond in the configured channel
+- Answer questions about Bittensor using the knowledge base
+- Show typing status while processing
+- Handle long messages by splitting them
+
+**Example interactions**:
+```
+User: What is Bittensor?
+Atlas: Bittensor is a decentralized machine learning network...
+
+User: How does TAO token work?
+Atlas: TAO is the native token of the Bittensor network...
+```
+
+### Bot Features
+
+- ✅ **AI-Powered**: Uses Gemini for intelligent responses
+- ✅ **Knowledge Base**: RAG from scraped documentation
+- ✅ **Channel-Specific**: Only responds in designated channels
+- ✅ **Typing Indicator**: Shows bot is thinking
+- ✅ **Long Messages**: Handles responses >2000 characters
+- ✅ **Error Handling**: Graceful error recovery
 
 ## Usage
 

@@ -65,3 +65,6 @@ htmlcov/
 # Misc
 *.bak
 .cache/
+
+# Reference files (local development)
+references/
