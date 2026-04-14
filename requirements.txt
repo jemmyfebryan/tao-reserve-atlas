@@ -1,0 +1,22 @@
+# Core dependencies
+llama-index-core
+llama-index-readers-web
+llama-index-vector-stores-chroma
+chromadb
+
+# Embeddings (Google Gemini)
+google-generativeai
+
+# Web scraping
+beautifulsoup4
+requests
+html2text
+
+# CLI
+click
+python-dotenv
+rich
+
+# Utilities
+tqdm
+pyyaml
