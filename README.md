@@ -1,14 +1,15 @@
-# TaoReserve Bot - Web Scraper Module
+# TaoReserve Bot - Web Scraper & AI Agent
 
-A flexible web scraping and vector database module for building RAG (Retrieval-Augmented Generation) knowledge bases. Designed for the TaoReserve Discord bot but usable as a standalone tool.
+A flexible web scraping, vector database, and AI agent system for building RAG (Retrieval-Augmented Generation) knowledge bases. Designed for the TaoReserve Discord bot but usable as a standalone tool.
 
 ## Features
 
 - 🕷️ **Web Scraping**: Scrape static websites with optional recursive link following
 - 📦 **Vector Storage**: Local ChromaDB for persistent embedding storage
 - 🔍 **Semantic Search**: Query your knowledge base with natural language
+- 🤖 **AI Agent**: ReAct-style agent that uses tools to answer questions
 - 🛠️ **Dual Mode**: Use as CLI tool or import as Python module
-- 🧩 **Bot-Ready**: Designed for easy integration with LangGraph/LangChain
+- 🧩 **Bot-Ready**: Designed for easy integration with Discord bots
 
 ## Installation
 
@@ -59,6 +60,57 @@ python main.py collections
 python main.py delete --collection knowledge_base
 ```
 
+**Ask AI (RAG with context):**
+```bash
+python main.py ask "What is Bittensor and how does it work?"
+```
+
+**Rename a collection:**
+```bash
+python main.py rename knowledge_base learn_bittensor
+```
+
+### AI Agent
+
+The agent uses tools to answer questions intelligently:
+
+```python
+from agent import ask_agent
+
+# Simple usage
+answer = ask_agent("What is TAO token?")
+print(answer)
+
+# Advanced usage
+from agent import BittensorAgent
+
+agent = BittensorAgent()
+result = agent.query("Explain subnet registration")
+
+print(f"Tool used: {result['tool_used']}")
+print(f"Answer: {result['answer']}")
+```
+
+**Test the agent:**
+```bash
+python test_agent.py
+```
+
+### Adding New Tools
+
+Tools are defined in `agent/tools.py`. To add a new tool:
+
+```python
+# In agent/tools.py, add to get_all_tools():
+"my_new_tool": RAGTool(
+    collection_name="my_collection",
+    name="my_new_tool",
+    description="Use this for questions about..."
+),
+```
+
+That's it! The agent will automatically discover and use the new tool.
+
 ### As a Python Module
 
 ```python
@@ -88,34 +140,41 @@ for result in results:
 
 ## Integration with Discord Bot
 
-The module is designed for easy integration with your LangGraph-based Discord bot:
+The agent is designed for easy Discord bot integration:
 
 ```python
-from langchain.tools import tool
-from scraper import VectorStore
+from agent import BittensorAgent
 
-# Initialize vector store
-vector_store = VectorStore(collection_name="bittensor_knowledge")
-vector_store.load_existing_index()
+# Initialize agent once
+agent = BittensorAgent()
 
-@tool
-def search_knowledge_base(query: str) -> str:
-    """Search the Bittensor knowledge base for information."""
-    results = vector_store.query(query, top_k=3)
+# In your Discord message handler
+async def on_message(message):
+    if message.content.startswith('!ask'):
+        question = message.content[5:].strip()
 
-    if not results:
-        return "No relevant information found in the knowledge base."
+        # Get answer from agent
+        answer = agent.query_simple(question)
 
-    # Format results for the bot
-    response = f"Found {len(results)} relevant results:\n\n"
-    for i, result in enumerate(results, 1):
-        response += f"{i}. {result['text'][:300]}...\n"
-        response += f"   Source: {result['metadata']['url']}\n\n"
-
-    return response
-
-# Add this tool to your LangGraph agent
+        # Send to Discord
+        await message.channel.send(answer)
 ```
+
+Or use the simpler interface:
+
+```python
+from agent import ask_agent
+
+# In your Discord bot
+async def handle_question(question: str) -> str:
+    return ask_agent(question)
+```
+
+The agent automatically:
+1. Selects the right tool based on the question
+2. Queries the knowledge base
+3. Returns a natural, friendly answer
+4. No citations or technical artifacts - just clean answers!
 
 ## Project Structure
 
@@ -126,9 +185,16 @@ taoreserve_bot/
 │   ├── web_scraper.py        # Web scraping logic
 │   ├── vector_store.py       # Vector database operations
 │   ├── document_processor.py # Content processing & chunking
+│   ├── gemini_embeddings.py  # Gemini embeddings wrapper
 │   └── cli.py               # Command-line interface
+├── agent/
+│   ├── __init__.py           # Agent package
+│   ├── agent.py             # ReAct-style agent implementation
+│   ├── tools.py             # Tool definitions (easy to add new tools!)
+│   └── prompts.py           # System prompts
 ├── config.py                # Configuration management
 ├── main.py                  # CLI entry point
+├── test_agent.py            # Test script for agent
 ├── requirements.txt         # Python dependencies
 ├── .env.example            # Environment variables template
 └── README.md               # This file
