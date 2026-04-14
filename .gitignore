@@ -68,3 +68,11 @@ htmlcov/
 
 # Reference files (local development)
 references/
+
+# Logs
+logs/
+*.log
+pm2-*.log
+
+# PM2
+.pm2/

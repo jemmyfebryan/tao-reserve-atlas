@@ -7,6 +7,10 @@ chromadb
 # Embeddings (Google Gemini)
 google-generativeai
 
+# Local embeddings (FREE alternative - uncomment if needed)
+# sentence-transformers
+# llama-index-embeddings-huggingface
+
 # Discord Bot
 discord.py
 python-dotenv

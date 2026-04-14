@@ -5,46 +5,76 @@ An AI-powered Discord bot that answers questions about Bittensor using RAG.
 
 import discord
 import os
+import sys
 from dotenv import load_dotenv
 from agent import BittensorAgent
 
+# Force flush output
+sys.stdout.reconfigure(line_buffering=True)
+
 # Load environment variables
 load_dotenv()
+print("✓ Environment loaded", flush=True)
 
 # Configuration
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-TARGET_CHANNEL_ID = int(os.getenv('TARGET_CHANNEL_ID', 0))
+TARGET_CHANNEL_ID = os.getenv('TARGET_CHANNEL_ID')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
-# Validate configuration
+# Validate configuration with helpful error messages
+errors = []
+
 if not DISCORD_TOKEN:
-    raise ValueError("DISCORD_TOKEN is required. Set it in .env file")
+    errors.append("❌ DISCORD_TOKEN is missing in .env file")
+
 if not TARGET_CHANNEL_ID:
-    raise ValueError("TARGET_CHANNEL_ID is required. Set it in .env file")
+    errors.append("❌ TARGET_CHANNEL_ID is missing in .env file")
+else:
+    try:
+        TARGET_CHANNEL_ID = int(TARGET_CHANNEL_ID)
+    except ValueError:
+        errors.append("❌ TARGET_CHANNEL_ID must be a valid number")
+
 if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY is required. Set it in .env file")
+    errors.append("❌ GEMINI_API_KEY is missing in .env file")
+
+if errors:
+    print("\n" + "="*70, flush=True)
+    print("❌ Configuration Error - Atlas Bot Cannot Start", flush=True)
+    print("="*70, flush=True)
+    for error in errors:
+        print(error, flush=True)
+    print("\n" + "="*70, flush=True)
+    print("Please fix your .env file:", flush=True)
+    print("  cp .env.example .env", flush=True)
+    print("  # Edit .env and add your API keys", flush=True)
+    print("="*70 + "\n", flush=True)
+    sys.exit(1)
 
 # Set up Discord intents
 intents = discord.Intents.default()
 intents.message_content = True
 
 # Initialize the AI agent
+print("✓ Initializing AI agent...", flush=True)
 agent = BittensorAgent(model="models/gemini-2.5-flash")
+print("✓ AI agent ready", flush=True)
 
 # Set up Discord client
 client = discord.Client(intents=intents)
+print("✓ Discord client initialized", flush=True)
 
 
 @client.event
 async def on_ready():
     """Called when the bot is ready."""
-    print(f'{'='*70}')
-    print(f'✓ Atlas Bot Online!')
-    print(f'{'='*70}')
-    print(f'Logged in as: {client.user} (ID: {client.user.id})')
-    print(f'Listening to Channel ID: {TARGET_CHANNEL_ID}')
-    print(f'Using Gemini AI for intelligent responses')
-    print(f'{'='*70}\n')
+    print(f'\n{'='*70}', flush=True)
+    print(f'✓ Atlas Bot Online!', flush=True)
+    print(f'{'='*70}', flush=True)
+    print(f'Logged in as: {client.user} (ID: {client.user.id})', flush=True)
+    print(f'Listening to Channel ID: {TARGET_CHANNEL_ID}', flush=True)
+    print(f'Using Gemini AI for intelligent responses', flush=True)
+    print(f'{'='*70}\n', flush=True)
 
 
 @client.event
@@ -102,6 +132,24 @@ async def on_message(message):
 
 
 # Start the bot
+print("✓ Bot initialization complete", flush=True)
+
+def start_bot():
+    """Start the Discord bot."""
+    print('\n' + '='*70, flush=True)
+    print('🤖 Starting Atlas Bot...', flush=True)
+    print('='*70 + '\n', flush=True)
+
+    try:
+        print("✓ Connecting to Discord...", flush=True)
+        client.run(DISCORD_TOKEN)
+    except Exception as e:
+        print(f"\n{'='*70}", flush=True)
+        print(f"❌ Fatal Error: {e}", flush=True)
+        print(f"{'='*70}\n", flush=True)
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
 if __name__ == "__main__":
-    print('\n🤖 Starting Atlas Bot...')
-    client.run(DISCORD_TOKEN)
+    start_bot()
