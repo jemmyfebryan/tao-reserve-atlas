@@ -125,12 +125,36 @@ Choose the most relevant tool. If no tool is relevant, return {{"tool_name": "no
             Tool execution result
         """
         if tool_name == "none" or tool_name not in self.tools:
-            return {
-                "tool_used": "none",
-                "answer": "I don't have a specific tool for this question. I can help with questions about Bittensor - feel free to ask about TAO, mining, subnets, or other Bittensor topics!",
-                "question": query,
-                "success": False,
-            }
+            # Use Gemini for general questions
+            general_prompt = f"""You are Atlas, a helpful AI assistant for Tao Reserve Discord server.
+
+About Tao Reserve:
+- An open server dedicated to the Tao Ecosystem
+- Connect subnet owners who want to hire developers with talented developers
+- Website: https://taoreserve.ai
+- Your name is Atlas
+
+Be friendly, helpful, and casual. Keep responses concise and natural.
+
+User message: {query}
+
+Respond naturally and helpfully:"""
+
+            try:
+                response = self.model.generate_content(general_prompt)
+                return {
+                    "tool_used": "general",
+                    "answer": response.text,
+                    "question": query,
+                    "success": True,
+                }
+            except Exception as e:
+                return {
+                    "tool_used": "none",
+                    "answer": f"Hey! I'm Atlas, here to help with the Tao Reserve community! I can answer questions about Bittensor, TAO, mining, and subnet development. What would you like to know?",
+                    "question": query,
+                    "success": False,
+                }
 
         tool = self.tools[tool_name]
         return tool(query)

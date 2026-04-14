@@ -71,9 +71,10 @@ async def on_ready():
     print(f'\n{'='*70}', flush=True)
     print(f'✓ Atlas Bot Online!', flush=True)
     print(f'{'='*70}', flush=True)
-    print(f'Logged in as: {client.user} (ID: {client.user.id})', flush=True)
-    print(f'Listening to Channel ID: {TARGET_CHANNEL_ID}', flush=True)
-    print(f'Using Gemini AI for intelligent responses', flush=True)
+    print(f'Bot: {client.user} (ID: {client.user.id})', flush=True)
+    print(f'Server: Tao Reserve', flush=True)
+    print(f'Channel ID: {TARGET_CHANNEL_ID}', flush=True)
+    print(f'Mission: Connect subnet owners with developers', flush=True)
     print(f'{'='*70}\n', flush=True)
 
 
