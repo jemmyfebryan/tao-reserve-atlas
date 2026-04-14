@@ -3,7 +3,8 @@ module.exports = {
     name: 'atlas',
     script: 'run_bot.py',
     interpreter: 'python3',
-    cwd: '/home/jemmy/projects/bittensor_project/taoreserve_bot',
+    // cwd: Removed - PM2 will use current directory
+    // Make sure to run 'pm2 start ecosystem.config.cjs' from the project root
     instances: 1,
     autorestart: true,
     watch: false,

@@ -50,6 +50,8 @@ start:
 	pm2 start ecosystem.config.cjs --name atlas
 	@echo "✅ Atlas Bot started!"
 	@echo "💬 Use 'make logs' to see logs"
+	@echo ""
+	@echo "⚠️  Note: Make sure you're in the project directory when starting"
 
 # Stop PM2
 stop:
